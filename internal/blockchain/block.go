@@ -8,4 +8,5 @@ type Block struct {
 	Data      string    `json:"data"`
 	PrevHash  string    `json:"prev_hash"`
 	Hash      string    `json:"hash"`
+	Nonce     int       `json:"nonce"`
 }
