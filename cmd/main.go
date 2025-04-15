@@ -1,29 +1,31 @@
 package main
 
 import (
-	"fmt"
+	"os"
 
+	"github.com/blockchain-city/foundational-blockchain/internal/api"
 	"github.com/blockchain-city/foundational-blockchain/internal/blockchain"
 	"github.com/blockchain-city/foundational-blockchain/pkg/logger"
 )
 
 func main() {
-	logger.Info("Initializing Blockchain...")
-	bc := blockchain.NewBlockchain()
+	logger.Info("Starting Blockchain Node...")
 
-	logger.Info("Adding blocks...")
-	bc.AddBlock("اولین داده")
-	bc.AddBlock("دومین داده")
-	bc.AddBlock("سومین داده")
-
-	if err := bc.IsValid(); err != nil {
-		logger.Error(err)
+	var bc *blockchain.Blockchain
+	if _, err := os.Stat("data/chain.json"); err == nil {
+		loaded, err := blockchain.LoadFromDisk()
+		if err != nil {
+			logger.Error(err)
+			return
+		}
+		bc = loaded
+		logger.Info("Blockchain loaded from disk")
 	} else {
-		logger.Info("Blockchain is valid.")
+		bc = blockchain.NewBlockchain()
+		bc.SaveToDisk()
+		logger.Info("Genesis block created")
 	}
 
-	for _, block := range bc.GetAllBlocks() {
-		fmt.Printf("Index: %d\nTime: %s\nData: %s\nHash: %s\nPrevHash: %s\n\n",
-			block.Index, block.Timestamp, block.Data, block.Hash, block.PrevHash)
-	}
+	server := api.NewServer(bc)
+	server.Run(":8080")
 }
