@@ -22,8 +22,11 @@ func main() {
 		logger.Info("Blockchain loaded from disk")
 	} else {
 		bc = blockchain.NewBlockchain()
-		bc.SaveToDisk()
-		logger.Info("Genesis block created")
+		if err := bc.SaveToDisk(); err != nil {
+			logger.Error(err)
+			return
+		}
+		logger.Info("Genesis block created and saved")
 	}
 
 	server := api.NewServer(bc)
