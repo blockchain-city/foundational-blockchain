@@ -44,8 +44,8 @@ foundational-blockchain/
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/basic-blockchain.git
-cd basic-blockchain
+git clone https://github.com/yourusername/foundational-blockchain.git
+cd foundational-blockchain
 ```
 
 ### 3. Run the Node
